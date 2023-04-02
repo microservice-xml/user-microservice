@@ -18,7 +18,11 @@ public class UserController {
         return userService.findAll();
     }
     @PostMapping
-    public ResponseEntity add(@RequestBody User user) {
+    public ResponseEntity registerUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.registerUser(user));
+    }
+    @PostMapping
+    public User changeUserInfo(@RequestBody User newUser) {
+        return userService.changeUserInfo(newUser);
     }
 }
