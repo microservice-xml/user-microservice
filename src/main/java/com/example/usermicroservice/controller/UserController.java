@@ -21,8 +21,12 @@ public class UserController {
     public ResponseEntity registerUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.registerUser(user));
     }
-    @PostMapping
-    public User changeUserInfo(@RequestBody User newUser) {
-        return userService.changeUserInfo(newUser);
+    @PostMapping("/update")
+    public User changeUserInfo(@RequestBody User newUserInfo, User user) {
+        return userService.changeUserInfo(newUserInfo, user);
+    }
+    @DeleteMapping("/{/remove}")
+    public void deleteUser(User user){
+        userService.deleteUser(user);
     }
 }

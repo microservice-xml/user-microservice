@@ -1,5 +1,6 @@
 package com.example.usermicroservice.model;
 
+import com.example.usermicroservice.model.enums.Role;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import org.springframework.data.annotation.Id;
 
 public class User {
     @Id
-    private String Id;
+    private Long Id;
     @Column
     private String username;
     @Column
@@ -27,4 +28,6 @@ public class User {
     private String email;
     @Column
     private String location;
+    @Column
+    private Role role;
 }
