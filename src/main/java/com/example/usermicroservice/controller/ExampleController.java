@@ -1,4 +1,4 @@
-package controller;
+package com.example.usermicroservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
