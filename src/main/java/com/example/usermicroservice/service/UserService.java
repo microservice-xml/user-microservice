@@ -17,14 +17,8 @@ public class UserService {
     public User registerUser(User user){
         return userRepository.save(user);
     }
-    public User changeUserInfo(User newUserInfo, User user){
-        user.setEmail(newUserInfo.getEmail());
-        user.setName(newUserInfo.getName());
-        user.setLastName(newUserInfo.getLastName());
-        user.setLocation(newUserInfo.getLocation());
-        user.setUsername(newUserInfo.getUsername());
-        user.setPassword(newUserInfo.getPassword());
-        return user;
+    public User changeUserInfo(User newUserInfo){
+        return userRepository.save(newUserInfo);
     }
     public void deleteUser(User user){
         if(user.getRole().equals("Guest")){
@@ -35,6 +29,5 @@ public class UserService {
             //treba dodati uslov ako Host nema zakazanih termina u svom smestaju, i brisu mu se i smestaji
             userRepository.deleteById(user.getId());
         }
-
     }
 }

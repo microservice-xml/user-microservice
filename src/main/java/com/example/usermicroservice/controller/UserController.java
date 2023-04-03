@@ -8,25 +8,28 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
-@RequestMapping("/api/user-registration")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     UserService userService;
-    @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> findAll() {
+        return new ResponseEntity<>(userService.findAll(), OK);
     }
-    @PostMapping
-    public ResponseEntity registerUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user));
+    @PostMapping("/registration")
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.registerUser(user), CREATED);
     }
-    @PostMapping("/update")
-    public User changeUserInfo(@RequestBody User newUserInfo, User user) {
-        return userService.changeUserInfo(newUserInfo, user);
+    @PutMapping("/change-personal-info")
+    public ResponseEntity<User> changeUserInfo(@RequestBody User newUserInfo) {
+        return new ResponseEntity<>(userService.changeUserInfo(newUserInfo), CREATED);
     }
-    @DeleteMapping("/{/remove}")
-    public void deleteUser(User user){
+    @DeleteMapping("/remove/{user}")
+    public void deleteUser(@PathVariable("user") User user){
         userService.deleteUser(user);
     }
 }
