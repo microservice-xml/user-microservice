@@ -3,6 +3,7 @@ package com.example.usermicroservice.controller;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
+    @Autowired
     UserService userService;
     @GetMapping("/all")
     public ResponseEntity<List<User>> findAll() {
@@ -28,8 +30,8 @@ public class UserController {
     public ResponseEntity<User> changeUserInfo(@RequestBody User newUserInfo) {
         return new ResponseEntity<>(userService.changeUserInfo(newUserInfo), CREATED);
     }
-    @DeleteMapping("/remove/{user}")
-    public void deleteUser(@PathVariable("user") User user){
-        userService.deleteUser(user);
+    @DeleteMapping("/remove/{id}")
+    public void deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
     }
 }
