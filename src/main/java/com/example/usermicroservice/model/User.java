@@ -19,8 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-    @Column(name = "address_id", unique = true, nullable = false)
-    private Long addressId;
+    @Column(name = "location", nullable = false)
+    private String location;
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "username" , unique = true, nullable = false)
@@ -31,9 +31,9 @@ public class User {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name = "penalties", nullable = false)
+    @Column(name = "penalties")
     private int penalties;
     @Column(name = "role", nullable = false)
     private String role;
