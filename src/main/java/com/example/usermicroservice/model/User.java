@@ -19,20 +19,26 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
+    @Column(name = "address_id", unique = true, nullable = false)
+    private Long addressId;
+    @Column(name = "email", nullable = false)
+    private String email;
     @Column(name = "username" , unique = true, nullable = false)
     private String username;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "name", nullable = false)
-    private String name;
-    @Column(name = "lastName", nullable = false)
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "email", nullable = false)
-    private String email;
-    @Column(name = "location", nullable = false)
-    private String location;
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+    @Column(name = "penalties", nullable = false)
+    private int penalties;
     @Column(name = "role", nullable = false)
-    private Role role;
+    private String role;
+    //Ovde treba promeniti da je role tipa Role ali me zeza MySql vec satima i ne radi ne znam zasto
     @Column(name = "numberOfCancel", nullable = false)
     private int numberOfCancel;
+
 }

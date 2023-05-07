@@ -1,1 +1,0 @@
-insert into users (username, password, name, last_name, email, location, role) values('spiricn' , 'spiricn' , 'Nikola', 'Spiric' , 'spiricn00@gmail.com', 'Futog' , 1)
