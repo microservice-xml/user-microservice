@@ -38,4 +38,7 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
     //Ovde treba promeniti da je role tipa Role ali me zeza MySql vec satima i ne radi ne znam zasto
+    @Column(name = "numberOfCancel", nullable = false)
+    private int numberOfCancel;
+
 }

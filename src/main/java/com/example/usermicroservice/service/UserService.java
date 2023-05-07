@@ -17,6 +17,7 @@ public class UserService {
         return userRepository.findAll();
     };
     public User registerUser(User user){
+        user.setNumberOfCancel(0);
         return userRepository.save(user);
     }
     public User changeUserInfo(User newUserInfo){
