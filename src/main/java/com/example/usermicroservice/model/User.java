@@ -33,4 +33,6 @@ public class User {
     private String location;
     @Column(name = "role", nullable = false)
     private Role role;
+    @Column(name = "numberOfCancel", nullable = false)
+    private int numberOfCancel;
 }
