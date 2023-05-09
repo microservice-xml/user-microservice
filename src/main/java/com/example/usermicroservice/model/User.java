@@ -35,8 +35,8 @@ public class User {
     private String phoneNumber;
     @Column(name = "penalties")
     private int penalties;
-    @Column(name = "role", nullable = false)
-    private String role;
+    @Column(name = "role", nullable = false, columnDefinition = "ENUM('GUEST', 'HOST'")
+    private Role role;
     //Ovde treba promeniti da je role tipa Role ali me zeza MySql vec satima i ne radi ne znam zasto
     @Column(name = "numberOfCancel")
     private int numberOfCancel;
