@@ -1,5 +1,6 @@
 package com.example.usermicroservice.controller;
 
+import com.example.usermicroservice.dto.UserDetailsResponseDto;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,15 @@ public class UserController {
     @DeleteMapping("/remove/{id}")
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
+    }
+
+    @GetMapping("/user-details/{username}")
+    public ResponseEntity<UserDetailsResponseDto> getUserDetails(@PathVariable("username") String username) {
+        User user = userService.loadUserByUsername(username);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        UserDetailsResponseDto dto = new UserDetailsResponseDto(user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getPenalties());
+        return ResponseEntity.ok(dto);
     }
 }

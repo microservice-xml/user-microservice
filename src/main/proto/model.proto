@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package communication;
+
+enum Role {
+  GUEST = 0;
+  HOST = 1;
+}
+
+message UserDetailsRequest {
+  string username = 1;
+}
+
+message UserDetailsResponse {
+  uint64 id = 1;
+  string username = 2;
+  string password = 3;
+  Role role = 4;
+  uint32 penalties = 5;
+}
