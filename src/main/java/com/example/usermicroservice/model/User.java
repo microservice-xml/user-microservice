@@ -1,7 +1,7 @@
 package com.example.usermicroservice.model;
 
 import com.example.usermicroservice.model.enums.Role;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users" , schema = "public")
+@Table(name = "user" , schema = "public")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,10 +35,9 @@ public class User {
     private String phoneNumber;
     @Column(name = "penalties")
     private int penalties;
-    @Column(name = "role", nullable = false, columnDefinition = "ENUM('GUEST', 'HOST'")
+    @Column(columnDefinition = "ENUM('GUEST','HOST')", name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
     //Ovde treba promeniti da je role tipa Role ali me zeza MySql vec satima i ne radi ne znam zasto
-    @Column(name = "numberOfCancel")
-    private int numberOfCancel;
 
 }
