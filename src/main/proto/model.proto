@@ -19,3 +19,19 @@ message UserDetailsResponse {
   Role role = 4;
   uint32 penalties = 5;
 }
+
+message MessageResponse {
+  string message = 1;
+}
+
+message RegisterUser {
+  string username = 1;
+  string location = 2;
+  string email = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string phoneNumber = 6;
+  string password = 7;
+  uint32 penalties = 8;
+  Role role = 9;
+}
