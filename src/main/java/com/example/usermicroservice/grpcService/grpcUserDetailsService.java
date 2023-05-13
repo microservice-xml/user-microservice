@@ -2,7 +2,10 @@ package com.example.usermicroservice.grpcService;
 import com.example.usermicroservice.mapper.UserMapper;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.service.UserService;
-import communication.*;
+import communication.MessageResponse;
+import communication.UserDetailsResponse;
+import communication.UserList;
+import communication.userDetailsServiceGrpc;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 
@@ -54,10 +57,18 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
 
     @Override
     public void findAll(communication.EmptyRequest request,
-                        io.grpc.stub.StreamObserver<communication.UserList> responseObserver) {
+                        io.grpc.stub.StreamObserver<UserList> responseObserver) {
                 List<User> finalUsers = userService.findAll();
                 UserList userList = UserList.newBuilder().addAllUsers(convertUsersToUsersGrpc(finalUsers)).build();
                 responseObserver.onNext(userList);
                 responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getById(communication.UserIdRequest request,
+                        io.grpc.stub.StreamObserver<communication.RegisterUser> responseObserver) {
+        User user = userService.getById(request.getId());
+        responseObserver.onNext(UserMapper.convertFromUserToRegisterUser(user));
+        responseObserver.onCompleted();
     }
 }

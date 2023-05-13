@@ -48,6 +48,10 @@ message User {
   Role role = 10;
 }
 
+message UserIdRequest {
+  uint64 id = 1;
+}
+
 message UserList {
   repeated User users = 1;
 }

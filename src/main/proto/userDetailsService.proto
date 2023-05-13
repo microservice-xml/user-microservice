@@ -12,4 +12,6 @@ service userDetailsService {
   rpc changeUserInfo(User) returns (User);
 
   rpc findAll(EmptyRequest) returns (UserList);
+
+  rpc getById(UserIdRequest) returns (RegisterUser);
 }
