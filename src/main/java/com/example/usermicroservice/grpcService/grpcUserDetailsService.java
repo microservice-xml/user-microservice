@@ -1,4 +1,5 @@
 package com.example.usermicroservice.grpcService;
+import com.example.usermicroservice.mapper.UserMapper;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +18,16 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
     public void getUserDetails(communication.UserDetailsRequest request,
                                io.grpc.stub.StreamObserver<communication.UserDetailsResponse> responseObserver){
         User user = userService.loadUserByUsername(request.getUsername());
-        UserDetailsResponse response = UserDetailsResponse.newBuilder()
-                .setId(user.getId())
-                .setUsername(user.getUsername())
-                .setPassword(user.getPassword())
-                .setRole(user.getRole().equals(com.example.usermicroservice.model.enums.Role.GUEST) ?  Role.GUEST: Role.HOST)
-                .setPenalties(user.getPenalties()).build();
+        UserDetailsResponse response = UserMapper.convertUserToUserDetailsResponse(user);
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void register(communication.RegistrationRequest request,
+                         io.grpc.stub.StreamObserver<communication.RegistrationResponse> responseObserver) {
+
     }
 
 }
