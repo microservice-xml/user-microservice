@@ -32,6 +32,20 @@ public class UserMapper {
         return role.equals(com.example.usermicroservice.model.enums.Role.GUEST) ?  Role.GUEST: Role.HOST;
     }
 
+    public static RegisterUser convertFromUserToRegisterUser(User user){
+        return RegisterUser.newBuilder()
+                .setLocation(user.getLocation())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername())
+                .setPassword(user.getPassword())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setPhoneNumber(user.getPhoneNumber())
+                .setPenalties(user.getPenalties())
+                .setRole(convertToMessageRole(user.getRole()))
+                .build();
+    }
+
     public static User covertRegisterRequestToEntity(final RegisterUser request) {
         return User.builder()
                 .location(request.getLocation())

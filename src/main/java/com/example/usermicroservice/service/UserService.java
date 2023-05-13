@@ -54,4 +54,12 @@ public class UserService {
     public User loadUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
+    public User getById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return null;
+        }
+        return user.get();
+    }
 }
