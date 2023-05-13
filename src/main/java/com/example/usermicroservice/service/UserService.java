@@ -27,11 +27,10 @@ public class UserService {
         user.get().setLocation(newUserInfo.getLocation());
         user.get().setEmail(newUserInfo.getEmail());
         user.get().setUsername(newUserInfo.getUsername());
-        if(!newUserInfo.getPassword().isEmpty())
+        if(newUserInfo.getPassword() != null)
         {
             user.get().setPassword(newUserInfo.getPassword());
         }
-        user.get().setPassword(newUserInfo.getPassword());
         user.get().setFirstName(newUserInfo.getFirstName());
         user.get().setLastName(newUserInfo.getLastName());
         user.get().setPhoneNumber(newUserInfo.getPhoneNumber());
