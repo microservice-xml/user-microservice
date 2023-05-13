@@ -1,7 +1,7 @@
 package com.example.usermicroservice.mapper;
 
 import com.example.usermicroservice.model.User;
-import communication.RegistrationRequest;
+import communication.RegisterUser;
 import communication.Role;
 import communication.UserDetailsResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +29,9 @@ public class UserMapper {
         return role.equals(com.example.usermicroservice.model.enums.Role.GUEST) ?  Role.GUEST: Role.HOST;
     }
 
-    public static User covertRegisterRequestToEntity(final RegistrationRequest request) {
+    public static User covertRegisterRequestToEntity(final RegisterUser request) {
         return User.builder()
+                .location(request.getLocation())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
