@@ -35,7 +35,7 @@ public class User {
     private String phoneNumber;
     @Column(name = "penalties")
     private int penalties;
-    @Column(columnDefinition = "ENUM('GUEST','HOST')", name = "role", nullable = false)
+    @Column(columnDefinition = "ENUM('GUEST','HOST')", name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 }

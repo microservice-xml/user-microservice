@@ -45,6 +45,7 @@ message User {
   string password = 7;
   uint32 penalties = 8;
   uint64 id = 9;
+  Role role = 10;
 }
 
 message UserList {
