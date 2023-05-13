@@ -62,4 +62,10 @@ public class UserService {
         }
         return user.get();
     }
+
+    public void incPenalties(Long id){
+        User u = getById(id);
+        u.setPenalties(u.getPenalties()+1);
+        userRepository.save(u);
+    }
 }
