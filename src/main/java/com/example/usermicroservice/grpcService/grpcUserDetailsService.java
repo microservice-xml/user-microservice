@@ -28,17 +28,7 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
     public void register(communication.RegisterUser request,
                          io.grpc.stub.StreamObserver<communication.MessageResponse> responseObserver) {
 
-        User user = User.builder()
-                .location(request.getLocation())
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .password(request.getPassword())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .phoneNumber(request.getPhoneNumber())
-                .penalties(request.getPenalties())
-                .role(request.getRole().equals(Role.GUEST)? com.example.usermicroservice.model.enums.Role.GUEST : com.example.usermicroservice.model.enums.Role.HOST)
-                .build();
+        User user = UserMapper.covertRegisterRequestToEntity(request);
         User u = userService.registerUser(user);
         MessageResponse response;
         if(u!=null)

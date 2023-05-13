@@ -35,9 +35,11 @@ public class UserMapper {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
+                .password(request.getPassword())
                 .username(request.getUsername())
                 .role(convertToEntityRole(request.getRole()))
                 .phoneNumber(request.getPhoneNumber())
+                .penalties(0)
                 .build();
     }
 }

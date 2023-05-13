@@ -15,13 +15,10 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
     public List<User> findAll() {
         return userRepository.findAll();
     };
     public User registerUser(User user){
-        user.setPenalties(0);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
     public User changeUserInfo(User newUserInfo){
