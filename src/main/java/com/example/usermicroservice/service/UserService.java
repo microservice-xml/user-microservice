@@ -4,14 +4,15 @@ import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     @Autowired
     UserRepository userRepository;
 
@@ -22,7 +23,21 @@ public class UserService {
         return userRepository.save(user);
     }
     public User changeUserInfo(User newUserInfo){
-        return userRepository.save(newUserInfo);
+        Optional<User> user = userRepository.findById(newUserInfo.getId());
+        user.get().setLocation(newUserInfo.getLocation());
+        user.get().setEmail(newUserInfo.getEmail());
+        user.get().setUsername(newUserInfo.getUsername());
+        if(!newUserInfo.getPassword().isEmpty())
+        {
+            user.get().setPassword(newUserInfo.getPassword());
+        }
+        user.get().setPassword(newUserInfo.getPassword());
+        user.get().setFirstName(newUserInfo.getFirstName());
+        user.get().setLastName(newUserInfo.getLastName());
+        user.get().setPhoneNumber(newUserInfo.getPhoneNumber());
+        user.get().setPenalties(newUserInfo.getPenalties());
+
+        return userRepository.save(user.get());
     }
     public void deleteUser(Long id){
         userRepository.deleteById(id);

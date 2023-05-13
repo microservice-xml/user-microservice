@@ -23,7 +23,7 @@ public class User {
     private String location;
     @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "username" , unique = true, nullable = false)
+    @Column(name = "username" , nullable = false)
     private String username;
     @Column(name = "password", nullable = false)
     private String password;
@@ -38,6 +38,4 @@ public class User {
     @Column(columnDefinition = "ENUM('GUEST','HOST')", name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
-    //Ovde treba promeniti da je role tipa Role ali me zeza MySql vec satima i ne radi ne znam zasto
-
 }

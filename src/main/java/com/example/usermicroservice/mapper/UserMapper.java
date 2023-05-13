@@ -7,6 +7,9 @@ import communication.UserDetailsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
@@ -42,4 +45,55 @@ public class UserMapper {
                 .penalties(0)
                 .build();
     }
+    public static User convertUserGrpcToUser(communication.User communicationUser) {
+        return User.builder()
+                .id(communicationUser.getId())
+                .location(communicationUser.getLocation())
+                .email(communicationUser.getEmail())
+                .username(communicationUser.getUsername())
+                .firstName(communicationUser.getFirstName())
+                .lastName(communicationUser.getLastName())
+                .phoneNumber(communicationUser.getPhoneNumber())
+                .penalties(communicationUser.getPenalties())
+                .password(communicationUser.getPassword())
+                .build();
+    }
+
+    public static communication.User convertUserToUserGrpc(User user) {
+        communication.User request = communication.User.newBuilder()
+                .setId(user.getId())
+                .setLocation(user.getLocation())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername())
+                .setPassword(user.getPassword())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setPhoneNumber(user.getPhoneNumber())
+                .setPenalties(user.getPenalties())
+                .build();
+        return request;
+    }
+
+    public static List<communication.User> convertUsersToUsersGrpc(List<User> userList) {
+        List<communication.User> request = new ArrayList<>();
+
+        for (User user : userList) {
+            communication.User grpcUser = communication.User.newBuilder()
+                    .setId(user.getId())
+                    .setLocation(user.getLocation())
+                    .setEmail(user.getEmail())
+                    .setUsername(user.getUsername())
+                    .setPassword(user.getPassword())
+                    .setFirstName(user.getFirstName())
+                    .setLastName(user.getLastName())
+                    .setPhoneNumber(user.getPhoneNumber())
+                    .setPenalties(user.getPenalties())
+                    .build();
+
+            request.add(grpcUser);
+        }
+
+        return request;
+    }
+
 }

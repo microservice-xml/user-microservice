@@ -9,4 +9,7 @@ service userDetailsService {
 
   rpc register(RegisterUser) returns (MessageResponse);
 
+  rpc changeUserInfo(User) returns (User);
+
+  rpc findAll(EmptyRequest) returns (UserList);
 }
