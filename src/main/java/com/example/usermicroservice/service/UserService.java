@@ -7,7 +7,6 @@ import communication.BooleanResponse;
 import communication.UserCommunicationServiceGrpc;
 import communication.UserIdRequest;
 import communication.userDetailsServiceGrpc;
-import communication.UserCommunicationServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
@@ -47,25 +46,25 @@ public class UserService {
         return userRepository.save(user.get());
     }
     public boolean deleteUser(Long id){
+        BooleanResponse response;
         User user = getById(id);
         if(user.getRole() == Role.GUEST){
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
                     .usePlaintext()
                     .build();
             UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
-            BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
-            if(response.getAvailable()) {
-                userRepository.deleteById(id);
-                return true;
-            }
-            return false;
+            response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
         } else {
             ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
                     .usePlaintext()
                     .build();
-            UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
-            BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
+            communication.UserAccommodationServiceGrpc.UserAccommodationServiceBlockingStub blockingStub = communication.UserAccommodationServiceGrpc.newBlockingStub(channel);
+            response = blockingStub.checkForDelete(UserIdRequest.newBuilder().setId(id).build());
+        }
 
+        if(response.getAvailable()) {
+            userRepository.deleteById(id);
+            return true;
         }
         return false;
     }

@@ -78,9 +78,9 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
                     boolean success = userService.deleteUser(request.getId());
                     MessageResponse message;
                     if(success) {
-                        message = MessageResponse.newBuilder().setMessage("User successfully deleted").build();
+                        message = MessageResponse.newBuilder().setMessage("You have successfully deleted your profile.").build();
                     } else {
-                        message = MessageResponse.newBuilder().setMessage("User not deleted").build();
+                        message = MessageResponse.newBuilder().setMessage("You profile can't be deleted due to future reservations.").build();
                     }
                     responseObserver.onNext(message);
                     responseObserver.onCompleted();
