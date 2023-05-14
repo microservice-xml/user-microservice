@@ -25,7 +25,7 @@ public class UserMapper {
     }
 
     private static com.example.usermicroservice.model.enums.Role convertToEntityRole(Role role) {
-        return role.equals(Role.GUEST) ? com.example.usermicroservice.model.enums.Role.GUEST : com.example.usermicroservice.model.enums.Role.HOST;
+        return role == Role.GUEST ? com.example.usermicroservice.model.enums.Role.GUEST : com.example.usermicroservice.model.enums.Role.HOST;
     }
 
     private static Role convertToMessageRole(com.example.usermicroservice.model.enums.Role role) {
@@ -82,6 +82,7 @@ public class UserMapper {
                 .setPassword(user.getPassword())
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
+                .setRole(convertToMessageRole(user.getRole()))
                 .setPhoneNumber(user.getPhoneNumber())
                 .setPenalties(user.getPenalties())
                 .build();
@@ -92,17 +93,7 @@ public class UserMapper {
         List<communication.User> request = new ArrayList<>();
 
         for (User user : userList) {
-            communication.User grpcUser = communication.User.newBuilder()
-                    .setId(user.getId())
-                    .setLocation(user.getLocation())
-                    .setEmail(user.getEmail())
-                    .setUsername(user.getUsername())
-                    .setPassword(user.getPassword())
-                    .setFirstName(user.getFirstName())
-                    .setLastName(user.getLastName())
-                    .setPhoneNumber(user.getPhoneNumber())
-                    .setPenalties(user.getPenalties())
-                    .build();
+            communication.User grpcUser = convertUserToUserGrpc(user);
 
             request.add(grpcUser);
         }

@@ -1,7 +1,14 @@
 package com.example.usermicroservice.service;
 
 import com.example.usermicroservice.model.User;
+import com.example.usermicroservice.model.enums.Role;
 import com.example.usermicroservice.repository.UserRepository;
+import communication.BooleanResponse;
+import communication.UserCommunicationServiceGrpc;
+import communication.UserIdRequest;
+import communication.userDetailsServiceGrpc;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,16 +45,28 @@ public class UserService {
 
         return userRepository.save(user.get());
     }
-    public void deleteUser(Long id){
-        userRepository.deleteById(id);
-      /*  if(user.getRole().equals("Guest")){
-            //treba dodati uslov ako Guest nema rezervacija
+    public boolean deleteUser(Long id){
+        BooleanResponse response;
+        User user = getById(id);
+        if(user.getRole() == Role.GUEST){
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+                    .usePlaintext()
+                    .build();
+            UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
+            response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
+        } else {
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
+                    .usePlaintext()
+                    .build();
+            communication.UserAccommodationServiceGrpc.UserAccommodationServiceBlockingStub blockingStub = communication.UserAccommodationServiceGrpc.newBlockingStub(channel);
+            response = blockingStub.checkForDelete(UserIdRequest.newBuilder().setId(id).build());
+        }
+
+        if(response.getAvailable()) {
             userRepository.deleteById(id);
-        } else
-        {
-            //treba dodati uslov ako Host nema zakazanih termina u svom smestaju, i brisu mu se i smestaji
-            userRepository.deleteById(user.getId());
-        } */
+            return true;
+        }
+        return false;
     }
 
     public User loadUserByUsername(String username) {
