@@ -57,3 +57,7 @@ message UserList {
 }
 
 message EmptyRequest {}
+
+message BooleanResponse {
+  bool available = 1;
+}

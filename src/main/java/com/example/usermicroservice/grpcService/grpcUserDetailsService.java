@@ -71,4 +71,19 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
         responseObserver.onNext(UserMapper.convertFromUserToRegisterUser(user));
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void delete(communication.UserIdRequest request,
+                       io.grpc.stub.StreamObserver<communication.MessageResponse> responseObserver) {
+                    boolean success = userService.deleteUser(request.getId());
+                    MessageResponse message;
+                    if(success) {
+                        message = MessageResponse.newBuilder().setMessage("User successfully deleted").build();
+                    } else {
+                        message = MessageResponse.newBuilder().setMessage("User not deleted").build();
+                    }
+                    responseObserver.onNext(message);
+                    responseObserver.onCompleted();
+    }
+
 }

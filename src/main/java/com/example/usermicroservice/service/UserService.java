@@ -2,6 +2,12 @@ package com.example.usermicroservice.service;
 
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.repository.UserRepository;
+import communication.BooleanResponse;
+import communication.UserIdRequest;
+import communication.reservationServiceGrpc;
+import communication.userDetailsServiceGrpc;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,16 +44,17 @@ public class UserService {
 
         return userRepository.save(user.get());
     }
-    public void deleteUser(Long id){
-        userRepository.deleteById(id);
-      /*  if(user.getRole().equals("Guest")){
-            //treba dodati uslov ako Guest nema rezervacija
+    public boolean deleteUser(Long id){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+                .usePlaintext()
+                .build();
+        reservationServiceGrpc.reservationServiceBlockingStub blockingStub = reservationServiceGrpc.newBlockingStub(channel);
+        BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
+        if(!response.getAvailable()) {
             userRepository.deleteById(id);
-        } else
-        {
-            //treba dodati uslov ako Host nema zakazanih termina u svom smestaju, i brisu mu se i smestaji
-            userRepository.deleteById(user.getId());
-        } */
+            return true;
+        }
+        return false;
     }
 
     public User loadUserByUsername(String username) {
