@@ -4,7 +4,7 @@ option java_multiple_files = true;
 package communication;
 import "model.proto";
 
-service reservationService {
+service UserCommunicationService {
 
   rpc getReservation(UserIdRequest) returns (BooleanResponse);
 }

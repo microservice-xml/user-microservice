@@ -3,9 +3,10 @@ package com.example.usermicroservice.service;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.repository.UserRepository;
 import communication.BooleanResponse;
+import communication.UserCommunicationServiceGrpc;
 import communication.UserIdRequest;
-import communication.reservationServiceGrpc;
 import communication.userDetailsServiceGrpc;
+import communication.UserCommunicationServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +49,9 @@ public class UserService {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
                 .usePlaintext()
                 .build();
-        reservationServiceGrpc.reservationServiceBlockingStub blockingStub = reservationServiceGrpc.newBlockingStub(channel);
+        UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
         BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
-        if(!response.getAvailable()) {
+        if(response.getAvailable()) {
             userRepository.deleteById(id);
             return true;
         }
