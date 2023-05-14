@@ -1,6 +1,7 @@
 package com.example.usermicroservice.service;
 
 import com.example.usermicroservice.model.User;
+import com.example.usermicroservice.model.enums.Role;
 import com.example.usermicroservice.repository.UserRepository;
 import communication.BooleanResponse;
 import communication.UserCommunicationServiceGrpc;
@@ -46,14 +47,25 @@ public class UserService {
         return userRepository.save(user.get());
     }
     public boolean deleteUser(Long id){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
-                .usePlaintext()
-                .build();
-        UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
-        BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
-        if(response.getAvailable()) {
-            userRepository.deleteById(id);
-            return true;
+        User user = getById(id);
+        if(user.getRole() == Role.GUEST){
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+                    .usePlaintext()
+                    .build();
+            UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
+            BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
+            if(response.getAvailable()) {
+                userRepository.deleteById(id);
+                return true;
+            }
+            return false;
+        } else {
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
+                    .usePlaintext()
+                    .build();
+            UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
+            BooleanResponse response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
+
         }
         return false;
     }
