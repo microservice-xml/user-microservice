@@ -2,13 +2,36 @@ syntax = "proto3";
 
 option java_multiple_files = true;
 package communication;
+import "google/protobuf/timestamp.proto";
 
 service UserService{
   rpc incPenalties(LongId) returns (EmptyMessage);
+}
+
+service ReservationService {
+  rpc findAllByHostId(LongId) returns (ListReservation);
 }
 
 message LongId{
   uint64 id = 1;
 }
 message EmptyMessage {
+}
+message Reservation {
+  string id = 1;
+  google.protobuf.Timestamp start = 2;
+  google.protobuf.Timestamp end = 3;
+  uint64 userId = 4;
+  ReservationStatus status = 5;
+  string slotId = 6;
+  uint32 numberOfGuests = 7;
+  uint64 hostId = 8;
+}
+message ListReservation{
+  repeated Reservation reservations = 1;
+}
+enum ReservationStatus {
+  PENDING = 0;
+  ACCEPTED = 1;
+  DECLINED = 2;
 }

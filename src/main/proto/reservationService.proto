@@ -5,6 +5,5 @@ package communication;
 import "model.proto";
 
 service UserCommunicationService {
-
   rpc getReservation(UserIdRequest) returns (BooleanResponse);
 }
