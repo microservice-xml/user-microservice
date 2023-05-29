@@ -16,24 +16,20 @@ import org.springframework.web.bind.annotation.*;
 public class RateController {
     @Autowired
     RateService rateService;
-
     @GetMapping("")
     public ResponseEntity findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(rateService.findAll());
     }
-
     @PostMapping("")
     public ResponseEntity rateHost(@RequestBody Rate rate){
         return ResponseEntity.status(HttpStatus.CREATED).body(rateService.rateHost(rate));
     }
-
     @PutMapping("/{id}")
     public ResponseEntity changeRate(@RequestBody Rate rate){
         return ResponseEntity.status(HttpStatus.CREATED).body(rateService.changeRate(rate));
     }
-
     @DeleteMapping("/{id}")
-    public void deleteRate(@RequestBody Rate rate){
-        rateService.deleteRate(rate);
+    public ResponseEntity deleteRate(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(rateService.deleteRate(id));
     }
 }

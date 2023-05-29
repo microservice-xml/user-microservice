@@ -61,3 +61,20 @@ message EmptyRequest {}
 message BooleanResponse {
   bool available = 1;
 }
+
+message Rate {
+  uint64 hostId = 1;
+  uint64 guestId = 2;
+  uint32 rateValue = 3;
+  string rateDate = 4;
+  uint64 id = 5;
+}
+
+message RateWithId {
+  uint64 Id = 1;
+  uint64 hostId = 2;
+  uint64 guestId = 3;
+  uint32 rateValue = 4;
+  string rateDate = 5;
+}
+

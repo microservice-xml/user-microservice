@@ -59,10 +59,26 @@ public class RateService {
         return rateRepository.save(newRate.get());
     }
 
-    public void deleteRate(Rate rate) {
-        rateRepository.deleteById(rate.getId());
-        User u = userRepository.findById(rate.getHostId()).get();
-        u.setAvgGrade(calculateAvgRate(rate));
-        userRepository.save(u);
+    public Rate deleteRate(Long id) {
+        Optional<Rate> rateOptional = rateRepository.findById(id);
+        if (rateOptional.isPresent()) {
+            Rate rate = rateOptional.get();
+            User u = userRepository.findById(rate.getHostId()).orElse(null);
+            if (u != null) {
+                u.setAvgGrade(calculateAvgRate(rate));
+                userRepository.save(u);
+            }
+            rateRepository.delete(rate);
+            return rate;
+        }
+        return null;
+    }
+
+    public Rate getById(Long id) {
+        Optional<Rate> rate = rateRepository.findById(id);
+        if (rate.isEmpty()) {
+            return null;
+        }
+        return rate.get();
     }
 }
