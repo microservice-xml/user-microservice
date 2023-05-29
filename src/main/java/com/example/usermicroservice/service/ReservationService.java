@@ -1,8 +1,11 @@
 package com.example.usermicroservice.service;
 
+import com.example.usermicroservice.model.Rate;
 import com.example.usermicroservice.model.Reservation;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.model.enums.ReservationStatus;
+
+import com.example.usermicroservice.repository.RateRepository;
 import com.example.usermicroservice.repository.UserRepository;
 import communication.ListReservation;
 import communication.LongId;
@@ -25,6 +28,8 @@ public class ReservationService {
 
     private final UserRepository userRepository;
 
+    private final RateRepository rateRepository;
+
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
                 .usePlaintext()
@@ -40,6 +45,25 @@ public class ReservationService {
             retVal.add(convertReservationGrpcToReservation(res));
         }
         return retVal;
+    }
+
+    public boolean checkReservationHistory(Long hostId, Long guestId) {
+        List<Reservation> reservations = findAllByHostId(hostId);
+
+        for(Reservation res : reservations){
+            if(res.getUserId().equals(guestId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkCanUserRate(Long hostId, Long guestId) {
+        List<Rate> rates = rateRepository.findAllByGuestId(guestId);
+        if(rates.size() > 0) {
+            return false;
+        }
+        return true;
     }
 
     public boolean calculateHighlighted(Long hostId){
