@@ -1,23 +1,29 @@
 package com.example.usermicroservice.service;
 
 import com.example.usermicroservice.model.Reservation;
+import com.example.usermicroservice.model.User;
+import com.example.usermicroservice.model.enums.ReservationStatus;
+import com.example.usermicroservice.repository.UserRepository;
 import communication.ListReservation;
 import communication.LongId;
 import communication.ReservationServiceGrpc;
-import communication.UserServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 import static com.example.usermicroservice.mapper.ReservationMapper.convertReservationGrpcToReservation;
 
 @RequiredArgsConstructor
 @Service
 public class ReservationService {
+
+    private final UserRepository userRepository;
 
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
@@ -34,5 +40,47 @@ public class ReservationService {
             retVal.add(convertReservationGrpcToReservation(res));
         }
         return retVal;
+    }
+
+    public boolean calculateHighlighted(Long hostId){
+        boolean cancellationRate = false;
+        boolean leastFiveReservations = false;
+        boolean moreThan50days = false;
+        boolean avgGrade = false;
+        List<Reservation> reservations = findAllByHostId(hostId);
+        List<Reservation> acceptedReservations = new ArrayList<>();
+        List<Reservation> canceledReservations = new ArrayList<>();
+
+        for(Reservation res : reservations){
+            if(res.getStatus().equals(ReservationStatus.ACCEPTED))
+                acceptedReservations.add(res);
+            else if(res.getStatus().equals(ReservationStatus.DECLINED))
+                canceledReservations.add(res);
+        }
+
+        if((canceledReservations.size()/acceptedReservations.size()*100) < 5)
+            cancellationRate = true;
+
+        List<Reservation> pastAcceptedReservations = new ArrayList<>();
+        for(Reservation res : acceptedReservations)
+            if(LocalDate.now().isAfter(res.getEnd()))
+                pastAcceptedReservations.add(res);
+
+        if(pastAcceptedReservations.size() >= 5)
+            leastFiveReservations = true;
+
+
+        int days = 0;
+        for(Reservation res : pastAcceptedReservations){
+            days += ChronoUnit.DAYS.between(res.getStart(), res.getEnd());
+        }
+        if(days > 50)
+            moreThan50days = true;
+
+        if(userRepository.findById(hostId).get().getAvgGrade() > 4.7)
+            avgGrade = true;
+
+
+        return cancellationRate & leastFiveReservations & moreThan50days & avgGrade;
     }
 }

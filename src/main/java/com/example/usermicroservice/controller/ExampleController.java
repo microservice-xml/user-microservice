@@ -15,15 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExampleController {
 
     private final ReservationService reservationService;
+
     @GetMapping
-    public String ispisi()
-    {
+    public String ispisi() {
         return "Ok";
     }
 
 
     @GetMapping("/host/{id}")
-    public ResponseEntity test(@PathVariable Long id){
+    public ResponseEntity test(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.findAllByHostId(id));
+    }
+
+    @GetMapping("calc/{id}")
+    public ResponseEntity test1(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.calculateHighlighted(id));
     }
 }
