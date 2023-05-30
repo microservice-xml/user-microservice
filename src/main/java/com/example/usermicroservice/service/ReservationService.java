@@ -78,11 +78,13 @@ public class ReservationService {
         for(Reservation res : reservations){
             if(res.getStatus().equals(ReservationStatus.ACCEPTED))
                 acceptedReservations.add(res);
-            else if(res.getStatus().equals(ReservationStatus.DECLINED))
+            else if(res.getStatus().equals(ReservationStatus.CANCELED))
                 canceledReservations.add(res);
         }
 
-        if((canceledReservations.size()/acceptedReservations.size()*100) < 5)
+        if(acceptedReservations.size() == 0)
+            cancellationRate = false;
+        else if((canceledReservations.size()/acceptedReservations.size()*100) < 5)
             cancellationRate = true;
 
         List<Reservation> pastAcceptedReservations = new ArrayList<>();
@@ -106,5 +108,11 @@ public class ReservationService {
 
 
         return cancellationRate & leastFiveReservations & moreThan50days & avgGrade;
+    }
+
+    public void updateHostHighlighted(Long hostId){
+        User u = userRepository.findById(hostId).get();
+        u.setHighlighted(calculateHighlighted(hostId));
+        userRepository.save(u);
     }
 }

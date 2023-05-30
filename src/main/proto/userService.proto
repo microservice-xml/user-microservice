@@ -10,6 +10,7 @@ service UserService{
 
 service ReservationService {
   rpc findAllByHostId(LongId) returns (ListReservation);
+  rpc calculateIsHighlighted(LongId) returns (EmptyMessage);
 }
 
 message LongId{
@@ -34,4 +35,5 @@ enum ReservationStatus {
   PENDING = 0;
   ACCEPTED = 1;
   DECLINED = 2;
+  CANCELED = 3;
 }
