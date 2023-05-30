@@ -12,8 +12,9 @@ public class ReservationStatusMapper {
             return com.example.usermicroservice.model.enums.ReservationStatus.ACCEPTED;
         else if(status.equals(ReservationStatus.PENDING))
             return com.example.usermicroservice.model.enums.ReservationStatus.PENDING;
-        else
+        else if(status.equals(ReservationStatus.DECLINED))
             return com.example.usermicroservice.model.enums.ReservationStatus.DECLINED;
+        else return com.example.usermicroservice.model.enums.ReservationStatus.CANCELED;
 
     }
 
@@ -22,8 +23,10 @@ public class ReservationStatusMapper {
             return ReservationStatus.ACCEPTED;
         else if(status.equals(com.example.usermicroservice.model.enums.ReservationStatus.PENDING))
             return ReservationStatus.PENDING;
-        else
+        else if(status.equals(com.example.usermicroservice.model.enums.ReservationStatus.DECLINED))
             return ReservationStatus.DECLINED;
+        else
+            return ReservationStatus.CANCELED;
 
     }
 }
