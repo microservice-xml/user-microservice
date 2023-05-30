@@ -74,20 +74,24 @@ public class UserMapper {
     }
 
     public static communication.User convertUserToUserGrpc(User user) {
+        String password = user.getPassword() != null ? user.getPassword() : ""; // Set password to an empty string if it's null
+
         communication.User request = communication.User.newBuilder()
                 .setId(user.getId())
                 .setLocation(user.getLocation())
                 .setEmail(user.getEmail())
                 .setUsername(user.getUsername())
-                .setPassword(user.getPassword())
+                .setPassword(password)
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
                 .setRole(convertToMessageRole(user.getRole()))
                 .setPhoneNumber(user.getPhoneNumber())
                 .setPenalties(user.getPenalties())
                 .build();
+
         return request;
     }
+
 
     public static List<communication.User> convertUsersToUsersGrpc(List<User> userList) {
         List<communication.User> request = new ArrayList<>();
