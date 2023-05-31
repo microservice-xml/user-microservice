@@ -13,7 +13,7 @@ service userDetailsService {
 
   rpc findAll(EmptyRequest) returns (UserList);
 
-  rpc getById(UserIdRequest) returns (RegisterUser);
+  rpc getById(UserIdRequest) returns (RegisterUserAvgGrade);
 
   rpc delete(UserIdRequest) returns (MessageResponse);
 }

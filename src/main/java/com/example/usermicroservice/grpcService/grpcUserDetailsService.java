@@ -66,9 +66,9 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
 
     @Override
     public void getById(communication.UserIdRequest request,
-                        io.grpc.stub.StreamObserver<communication.RegisterUser> responseObserver) {
+                        io.grpc.stub.StreamObserver<communication.RegisterUserAvgGrade> responseObserver) {
         User user = userService.getById(request.getId());
-        responseObserver.onNext(UserMapper.convertFromUserToRegisterUser(user));
+        responseObserver.onNext(UserMapper.convertFromUserToRegisterUserAvgGrade(user));
         responseObserver.onCompleted();
     }
 

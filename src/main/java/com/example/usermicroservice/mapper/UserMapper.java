@@ -2,6 +2,7 @@ package com.example.usermicroservice.mapper;
 
 import com.example.usermicroservice.model.User;
 import communication.RegisterUser;
+import communication.RegisterUserAvgGrade;
 import communication.Role;
 import communication.UserDetailsResponse;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,21 @@ public class UserMapper {
                 .setPhoneNumber(user.getPhoneNumber())
                 .setPenalties(user.getPenalties())
                 .setRole(convertToMessageRole(user.getRole()))
+                .build();
+    }
+
+    public static RegisterUserAvgGrade convertFromUserToRegisterUserAvgGrade(User user){
+        return RegisterUserAvgGrade.newBuilder()
+                .setLocation(user.getLocation())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername())
+                .setPassword(user.getPassword())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setPhoneNumber(user.getPhoneNumber())
+                .setPenalties(user.getPenalties())
+                .setRole(convertToMessageRole(user.getRole()))
+                .setAvgGrade(user.getAvgGrade())
                 .build();
     }
 
