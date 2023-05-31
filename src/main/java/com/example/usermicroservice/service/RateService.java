@@ -81,4 +81,9 @@ public class RateService {
         }
         return rate.get();
     }
+
+    public List<Rate> getAllByHostId(Long id)
+    {
+        return rateRepository.findAllByHostId(id);
+    }
 }

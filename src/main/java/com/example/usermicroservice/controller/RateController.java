@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class RateController {
     @Autowired
     RateService rateService;
-    @GetMapping("")
-    public ResponseEntity findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(rateService.findAll());
-    }
+//    @GetMapping("")
+//    public ResponseEntity findAll() {
+//        return ResponseEntity.status(HttpStatus.OK).body(rateService.findAll());
+//    }
     @PostMapping("")
     public ResponseEntity rateHost(@RequestBody Rate rate){
         return ResponseEntity.status(HttpStatus.CREATED).body(rateService.rateHost(rate));
@@ -31,5 +31,10 @@ public class RateController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteRate(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(rateService.deleteRate(id));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getALlByHostId(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(rateService.getAllByHostId(id));
     }
 }

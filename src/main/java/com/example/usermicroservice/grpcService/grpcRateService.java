@@ -6,10 +6,13 @@ import com.example.usermicroservice.repository.RateRepository;
 import com.example.usermicroservice.service.RateService;
 import com.example.usermicroservice.service.UserService;
 import communication.MessageResponse;
+import communication.UserIdRequest;
 import communication.rateServiceGrpc;
 import communication.userDetailsServiceGrpc;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
+
+import java.util.List;
 
 import static com.example.usermicroservice.mapper.RateMapper.*;
 import static com.example.usermicroservice.mapper.UserMapper.convertUserToUserGrpc;
@@ -53,6 +56,19 @@ public class grpcRateService extends rateServiceGrpc.rateServiceImplBase {
         Rate rate = rateService.deleteRate(request.getId());
 
         responseObserver.onNext(convertFromMessageToRateWithId(rate));
+        responseObserver.onCompleted();
+    }
+    @Override
+    public void getAllByHostId(communication.UserIdRequest request,
+                               io.grpc.stub.StreamObserver<communication.ListRate> responseObserver) {
+        List<Rate> rates = rateService.getAllByHostId(request.getId());
+
+        List<communication.Rate> convertedRates = RateMapper.convertListFromMessageToRateWithId(rates);
+        communication.ListRate.Builder listRateResponseBuilder = communication.ListRate.newBuilder();
+        listRateResponseBuilder.addAllRates(convertedRates);
+        communication.ListRate listRateResponse = listRateResponseBuilder.build();
+
+        responseObserver.onNext(listRateResponse);
         responseObserver.onCompleted();
     }
 }

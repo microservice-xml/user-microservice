@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -64,4 +66,25 @@ public class RateMapper {
 
         return request;
     }
+
+    public static List<communication.Rate> convertListFromMessageToRateWithId(List<Rate> rates) {
+        List<communication.Rate> convertedRates = new ArrayList<>();
+
+        for (Rate rate : rates) {
+            String rateDate = rate.getRateDate().toString();
+
+            communication.Rate request = communication.Rate.newBuilder()
+                    .setId(rate.getId())
+                    .setHostId(rate.getHostId())
+                    .setGuestId(rate.getGuestId())
+                    .setRateValue(rate.getRateValue())
+                    .setRateDate(rateDate)
+                    .build();
+
+            convertedRates.add(request);
+        }
+
+        return convertedRates;
+    }
+
 }

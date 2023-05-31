@@ -9,4 +9,6 @@ public interface RateRepository extends JpaRepository<Rate, Long> {
     List<Rate> findALlByHostId(Long id);
 
     List<Rate> findAllByGuestId(Long id);
+
+    List<Rate> findAllByHostId(Long id);
 }
