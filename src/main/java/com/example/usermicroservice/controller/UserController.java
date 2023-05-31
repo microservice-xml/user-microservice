@@ -2,9 +2,11 @@ package com.example.usermicroservice.controller;
 
 import com.example.usermicroservice.dto.UserDetailsResponseDto;
 import com.example.usermicroservice.model.User;
+import com.example.usermicroservice.service.ReservationService;
 import com.example.usermicroservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,8 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserController {
     @Autowired
     UserService userService;
+    ReservationService reservationService;
+
     @GetMapping("/all")
     public ResponseEntity<List<User>> findAll() {
         return new ResponseEntity<>(userService.findAll(), OK);
@@ -44,5 +48,10 @@ public class UserController {
         }
         UserDetailsResponseDto dto = new UserDetailsResponseDto(user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getPenalties());
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/check-reservation-history/{hostId}/{guestId}")
+    public ResponseEntity checkReservationHistory(@PathVariable Long hostId, @PathVariable Long guestId){
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.checkReservationHistory(hostId,guestId));
     }
 }
