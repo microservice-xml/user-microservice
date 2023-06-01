@@ -34,7 +34,7 @@ public class UserService {
         user.get().setLocation(newUserInfo.getLocation());
         user.get().setEmail(newUserInfo.getEmail());
         user.get().setUsername(newUserInfo.getUsername());
-        if(newUserInfo.getPassword() != null)
+        if(!newUserInfo.getPassword().isBlank())
         {
             user.get().setPassword(newUserInfo.getPassword());
         }
