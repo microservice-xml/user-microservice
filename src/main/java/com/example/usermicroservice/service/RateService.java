@@ -42,6 +42,7 @@ public class RateService {
                 User u = userRepository.findById(rate.getHostId()).get();
                 u.setAvgGrade(calculateAvgRate(rate));
                 userRepository.save(u);
+                reservationService.updateHostHighlighted(rate.getHostId());
                 return newRate;
             } else {
                 throw new ThisGuestHaventReservation();
@@ -57,6 +58,7 @@ public class RateService {
         User u = userRepository.findById(rate.getHostId()).get();
         u.setAvgGrade(calculateAvgRate(rate));
         userRepository.save(u);
+        reservationService.updateHostHighlighted(rate.getHostId());
         return nr;
     }
 
@@ -68,6 +70,7 @@ public class RateService {
             User u = userRepository.findById(rate.getHostId()).orElse(null);
             u.setAvgGrade(calculateAvgRate(rate));
             userRepository.save(u);
+            reservationService.updateHostHighlighted(rate.getHostId());
             return rate;
         }
         return null;
