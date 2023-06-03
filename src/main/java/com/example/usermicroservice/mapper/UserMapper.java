@@ -2,6 +2,7 @@ package com.example.usermicroservice.mapper;
 
 import com.example.usermicroservice.model.User;
 import communication.RegisterUser;
+import communication.RegisterUserAvgGrade;
 import communication.Role;
 import communication.UserDetailsResponse;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,21 @@ public class UserMapper {
                 .build();
     }
 
+    public static RegisterUserAvgGrade convertFromUserToRegisterUserAvgGrade(User user){
+        return RegisterUserAvgGrade.newBuilder()
+                .setLocation(user.getLocation())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername())
+                .setPassword(user.getPassword())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setPhoneNumber(user.getPhoneNumber())
+                .setPenalties(user.getPenalties())
+                .setRole(convertToMessageRole(user.getRole()))
+                .setAvgGrade(user.getAvgGrade())
+                .build();
+    }
+
     public static User covertRegisterRequestToEntity(final RegisterUser request) {
         return User.builder()
                 .location(request.getLocation())
@@ -74,20 +90,24 @@ public class UserMapper {
     }
 
     public static communication.User convertUserToUserGrpc(User user) {
+        String password = user.getPassword() != null ? user.getPassword() : ""; // Set password to an empty string if it's null
+
         communication.User request = communication.User.newBuilder()
                 .setId(user.getId())
                 .setLocation(user.getLocation())
                 .setEmail(user.getEmail())
                 .setUsername(user.getUsername())
-                .setPassword(user.getPassword())
+                .setPassword(password)
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
                 .setRole(convertToMessageRole(user.getRole()))
                 .setPhoneNumber(user.getPhoneNumber())
                 .setPenalties(user.getPenalties())
                 .build();
+
         return request;
     }
+
 
     public static List<communication.User> convertUsersToUsersGrpc(List<User> userList) {
         List<communication.User> request = new ArrayList<>();
