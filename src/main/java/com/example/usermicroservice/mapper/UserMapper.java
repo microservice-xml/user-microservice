@@ -121,4 +121,36 @@ public class UserMapper {
         return request;
     }
 
+    public static List<communication.UserExtended> convertUsersToUsersExtendedGrpc(List<User> userList) {
+        List<communication.UserExtended> request = new ArrayList<>();
+
+        for (User user : userList) {
+            communication.UserExtended grpcUser = convertUserToUserExtendedGrpc(user);
+
+            request.add(grpcUser);
+        }
+
+        return request;
+    }
+
+    public static communication.UserExtended convertUserToUserExtendedGrpc(User user) {
+        String password = user.getPassword() != null ? user.getPassword() : ""; // Set password to an empty string if it's null
+
+        communication.UserExtended request = communication.UserExtended.newBuilder()
+                .setId(user.getId())
+                .setLocation(user.getLocation())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername())
+                .setPassword(password)
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setRole(convertToMessageRole(user.getRole()))
+                .setPhoneNumber(user.getPhoneNumber())
+                .setPenalties(user.getPenalties())
+                .setIsHighlighted(user.isHighlighted())
+                .build();
+
+        return request;
+    }
+
 }

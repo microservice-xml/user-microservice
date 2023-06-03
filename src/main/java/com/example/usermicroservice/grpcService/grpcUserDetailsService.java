@@ -11,8 +11,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 
 import java.util.List;
 
-import static com.example.usermicroservice.mapper.UserMapper.convertUserToUserGrpc;
-import static com.example.usermicroservice.mapper.UserMapper.convertUsersToUsersGrpc;
+import static com.example.usermicroservice.mapper.UserMapper.*;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -59,7 +58,7 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
     public void findAll(communication.EmptyRequest request,
                         io.grpc.stub.StreamObserver<UserList> responseObserver) {
                 List<User> finalUsers = userService.findAll();
-                UserList userList = UserList.newBuilder().addAllUsers(convertUsersToUsersGrpc(finalUsers)).build();
+                UserList userList = UserList.newBuilder().addAllUsers(convertUsersToUsersExtendedGrpc(finalUsers)).build();
                 responseObserver.onNext(userList);
                 responseObserver.onCompleted();
     }
