@@ -38,6 +38,10 @@ public class User {
     @Column(columnDefinition = "ENUM('GUEST','HOST')", name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "deleted")
+    private boolean deleted;
+
     private float avgGrade;
     private boolean isHighlighted;
 }
