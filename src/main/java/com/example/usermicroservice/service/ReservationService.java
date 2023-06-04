@@ -29,6 +29,7 @@ public class ReservationService {
     private final UserRepository userRepository;
 
     private final RateRepository rateRepository;
+    private final RateService rateService;
 
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
@@ -112,7 +113,19 @@ public class ReservationService {
 
     public void updateHostHighlighted(Long hostId){
         User u = userRepository.findById(hostId).get();
+        boolean oldStatus = u.isHighlighted();
         u.setHighlighted(calculateHighlighted(hostId));
+        boolean newStatus = u.isHighlighted();
+        doesStatusChanged(hostId,oldStatus,newStatus);
         userRepository.save(u);
     }
+
+    private void doesStatusChanged(Long hostId, boolean oldStatus, boolean newStatus) {
+        if(oldStatus==false && newStatus == true)
+            rateService.createNotification(hostId,"Congratulations. You have become a highlighted host.");
+        else if(oldStatus==true && newStatus == false)
+            rateService.createNotification(hostId,"Unfortunately, you have lose a status of highlighted host.");
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.usermicroservice.service;
 
+import com.example.usermicroservice.dto.NotificationConfigDto;
+import com.example.usermicroservice.dto.NotificationDto;
 import com.example.usermicroservice.event.EventType;
 import com.example.usermicroservice.event.UserDeleteStarted;
 import com.example.usermicroservice.model.User;
@@ -15,7 +17,11 @@ import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,8 +42,22 @@ public class UserService {
         return userRepository.findAll();
     };
     public User registerUser(User user){
-        return userRepository.save(user);
+        User newUser = userRepository.save(user);
+        createUserNotificationConfig(newUser);
+        return newUser;
     }
+
+    private void createUserNotificationConfig(User newUser) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<NotificationConfigDto> requestBody = new HttpEntity<>(NotificationConfigDto.builder().userId(newUser.getId()).build());
+        ResponseEntity<String> response;
+        if(newUser.getRole().equals(Role.HOST)) {
+             response = restTemplate.exchange("http://localhost:8088/config/host", HttpMethod.POST,requestBody,String.class);
+        } else{
+            response = restTemplate.exchange("http://localhost:8088/config/guest", HttpMethod.POST,requestBody,String.class);
+        }
+    }
+
     public User changeUserInfo(User newUserInfo){
         Optional<User> user = userRepository.findById(newUserInfo.getId());
         user.get().setLocation(newUserInfo.getLocation());
