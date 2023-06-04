@@ -1,5 +1,6 @@
 package com.example.usermicroservice.service;
 
+import com.example.usermicroservice.dto.NotificationDto;
 import com.example.usermicroservice.model.Rate;
 import com.example.usermicroservice.model.Reservation;
 import com.example.usermicroservice.model.User;
@@ -13,7 +14,11 @@ import communication.ReservationServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +34,7 @@ public class ReservationService {
     private final UserRepository userRepository;
 
     private final RateRepository rateRepository;
-    private final RateService rateService;
+
 
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
@@ -122,10 +127,15 @@ public class ReservationService {
 
     private void doesStatusChanged(Long hostId, boolean oldStatus, boolean newStatus) {
         if(oldStatus==false && newStatus == true)
-            rateService.createNotification(hostId,"Congratulations. You have become a highlighted host.");
+            createNotification(hostId,"Congratulations. You have become a highlighted host.");
         else if(oldStatus==true && newStatus == false)
-            rateService.createNotification(hostId,"Unfortunately, you have lose a status of highlighted host.");
+            createNotification(hostId,"Unfortunately, you have lose a status of highlighted host.");
     }
 
+    public void createNotification(Long userId, String message) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<NotificationDto> requestBody = new HttpEntity<>(NotificationDto.builder().userId(userId).message(message).build());
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8088/notification", HttpMethod.POST, requestBody, String.class);
+    }
 
 }
