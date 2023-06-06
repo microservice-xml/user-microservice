@@ -47,7 +47,7 @@ public class RateService {
                 u.setAvgGrade(calculateAvgRate(rate));
                 userRepository.save(u);
                 reservationService.updateHostHighlighted(rate.getHostId());
-                createNotification(rate.getHostId(), "You have received a new rating on your profile. Your current average rating is " + u.getAvgGrade());
+                createNotification(rate.getHostId(), "You have received a new rating on your profile. Your current average rating is " + u.getAvgGrade(),"newRate");
                 return newRate;
             } else {
                 throw new ThisGuestHaventReservation();
@@ -93,9 +93,9 @@ public class RateService {
         return rateRepository.findAllByHostId(id);
     }
 
-    public void createNotification(Long userId, String message) {
+    public void createNotification(Long userId, String message,String type) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<NotificationDto> requestBody = new HttpEntity<>(NotificationDto.builder().userId(userId).message(message).build());
+        HttpEntity<NotificationDto> requestBody = new HttpEntity<>(NotificationDto.builder().userId(userId).type(type).message(message).build());
         ResponseEntity<String> response = restTemplate.exchange("http://localhost:8088/notification", HttpMethod.POST, requestBody, String.class);
     }
 }

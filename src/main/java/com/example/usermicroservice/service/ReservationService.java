@@ -127,14 +127,14 @@ public class ReservationService {
 
     private void doesStatusChanged(Long hostId, boolean oldStatus, boolean newStatus) {
         if(oldStatus==false && newStatus == true)
-            createNotification(hostId,"Congratulations. You have become a highlighted host.");
+            createNotification(hostId,"Congratulations. You have become a highlighted host.","isHighlighted");
         else if(oldStatus==true && newStatus == false)
-            createNotification(hostId,"Unfortunately, you have lose a status of highlighted host.");
+            createNotification(hostId,"Unfortunately, you have lose a status of highlighted host.","isHighlighted");
     }
 
-    public void createNotification(Long userId, String message) {
+    public void createNotification(Long userId, String message,String type) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<NotificationDto> requestBody = new HttpEntity<>(NotificationDto.builder().userId(userId).message(message).build());
+        HttpEntity<NotificationDto> requestBody = new HttpEntity<>(NotificationDto.builder().userId(userId).type(type).message(message).build());
         ResponseEntity<String> response = restTemplate.exchange("http://localhost:8088/notification", HttpMethod.POST, requestBody, String.class);
     }
 
