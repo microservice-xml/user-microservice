@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,6 +38,12 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
     private final RabbitTemplate rabbitTemplate;
+
+    @Value("${reservation-api.grpc.address}")
+    private String accommodationApiGrpcAddress;
+
+    @Value("${accommodation-api.grpc.address}")
+    private String reservationApiGrpcAddress;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -78,15 +85,16 @@ public class UserService {
         BooleanResponse response;
         User user = getById(id);
         if(user.getRole() == Role.GUEST){
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
                     .usePlaintext()
                     .build();
             UserCommunicationServiceGrpc.UserCommunicationServiceBlockingStub blockingStub = UserCommunicationServiceGrpc.newBlockingStub(channel);
             response = blockingStub.getReservation(UserIdRequest.newBuilder().setId(id).build());
-
-
+            if (channel != null && !channel.isShutdown()) {
+                channel.shutdown();
+            }
         } else {
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9094)
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(accommodationApiGrpcAddress, 9094)
                     .usePlaintext()
                     .build();
             communication.UserAccommodationServiceGrpc.UserAccommodationServiceBlockingStub blockingStub = communication.UserAccommodationServiceGrpc.newBlockingStub(channel);
@@ -97,6 +105,9 @@ public class UserService {
                 rabbitTemplate.convertAndSend("myQueue", json);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if (channel != null && !channel.isShutdown()) {
+                channel.shutdown();
             }
         }
 

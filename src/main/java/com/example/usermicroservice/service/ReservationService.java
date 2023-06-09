@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,20 +36,28 @@ public class ReservationService {
 
     private final RateRepository rateRepository;
 
+    @Value("${accommodation-api.grpc.address}")
+    private String reservationApiGrpcAddress;
 
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9095)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
                 .usePlaintext()
                 .build();
         return ReservationServiceGrpc.newBlockingStub(channel);
     }
     public List<Reservation> findAllByHostId(Long hostId){
-        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = getStub();
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
+                .usePlaintext()
+                .build();
+        ReservationServiceGrpc.ReservationServiceBlockingStub blockingStub = ReservationServiceGrpc.newBlockingStub(channel);
 
         ListReservation reservations = blockingStub.findAllByHostId(LongId.newBuilder().setId(hostId).build());
         List<Reservation> retVal = new ArrayList<>();
         for(communication.Reservation res : reservations.getReservationsList()){
             retVal.add(convertReservationGrpcToReservation(res));
+        }
+        if (channel != null && !channel.isShutdown()) {
+            channel.shutdown();
         }
         return retVal;
     }

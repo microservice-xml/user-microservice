@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  user-api:
+    build: .
+    restart: always
+    ports:
+      - 8083:8083
+    environment:
+      - SPRING_DATASOURCE_URL= jdbc:mysql://db-user:3306/userdb
+      - ACCOMMODATION_API_GRPC_ADDRESS=accommodation-api
+      - RESERVATION_API_GRPC_ADDRESS=reservation-api
+
+networks:
+  default:
+    name: local-env_default
