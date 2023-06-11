@@ -38,7 +38,7 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
         if(u!=null)
             response = MessageResponse.newBuilder().setMessage("User created.").build();
         else
-            response = MessageResponse.newBuilder().setMessage("Register failed.").build();
+            response = MessageResponse.newBuilder().setMessage("User already exists.").build();
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();

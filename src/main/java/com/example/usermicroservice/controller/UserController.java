@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -28,8 +27,12 @@ public class UserController {
         return new ResponseEntity<>(userService.findAll(), OK);
     }
     @PostMapping("/registration")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        return new ResponseEntity<>(userService.registerUser(user), CREATED);
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        User newUser = userService.registerUser(user);
+        if (newUser == null) {
+            return new ResponseEntity("User already exists", BAD_REQUEST);
+        }
+        return new ResponseEntity<>(user, CREATED);
     }
     @PutMapping("/change-personal-info")
     public ResponseEntity<User> changeUserInfo(@RequestBody User newUserInfo) {
