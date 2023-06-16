@@ -14,6 +14,8 @@ import communication.ReservationServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,8 @@ public class ReservationService {
 
     @Value("${accommodation-api.grpc.address}")
     private String reservationApiGrpcAddress;
+
+    private Logger logger = LoggerFactory.getLogger(ReservationService.class);
 
     private ReservationServiceGrpc.ReservationServiceBlockingStub getStub() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(reservationApiGrpcAddress, 9095)
@@ -132,6 +136,7 @@ public class ReservationService {
         boolean newStatus = u.isHighlighted();
         doesStatusChanged(hostId,oldStatus,newStatus);
         userRepository.save(u);
+        logger.info("Successfully updated status of highlighted host [ID: %d]",hostId);
     }
 
     private void doesStatusChanged(Long hostId, boolean oldStatus, boolean newStatus) {
