@@ -1,9 +1,11 @@
 package com.example.usermicroservice.service;
 
+import com.example.usermicroservice.dto.messages.NewGuestUserMessage;
 import com.example.usermicroservice.dto.NotificationConfigDto;
-import com.example.usermicroservice.dto.NotificationDto;
+import com.example.usermicroservice.dto.messages.UserCreateFailedMessage;
 import com.example.usermicroservice.event.EventType;
 import com.example.usermicroservice.event.UserDeleteStarted;
+import com.example.usermicroservice.exception.UserExistsException;
 import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.model.enums.Role;
 import com.example.usermicroservice.repository.UserRepository;
@@ -11,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import communication.BooleanResponse;
 import communication.UserCommunicationServiceGrpc;
 import communication.UserIdRequest;
-import communication.userDetailsServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +52,46 @@ public class UserService {
         return userRepository.findAll();
     };
     public User registerUser(User user){
-        User newUser = userRepository.save(user);
-        logger.info("Successfully created user. [ID: %d]",user.getId());
-        createUserNotificationConfig(newUser);
-        return newUser;
+        try {
+            if (checkIfUserExists(user.getUsername()) != null) {
+                return null;
+            }
+            User newUser = userRepository.save(user);
+            publishNewUser(newUser);
+            createUserNotificationConfig(newUser);
+            logger.info("Successfully created user. [ID: %d]",newUser.getId());
+            return newUser;
+        } catch (Exception ex) {
+            publishRollback(user.getUsername());
+            return null;
+        }
+    }
+
+    private User checkIfUserExists(String username) throws UserExistsException {
+        User existingUser = userRepository.findByUsername(username);
+        return existingUser;
+    }
+
+    private void publishNewUser(User user) {
+        if (user.getRole() != Role.GUEST) return;
+
+        NewGuestUserMessage message = new NewGuestUserMessage(user.getId(), user.getUsername());
+        try {
+            String json = objectMapper.writeValueAsString(message);
+            rabbitTemplate.convertAndSend("recommendationQueue", json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void publishRollback(String username) {
+        UserCreateFailedMessage message = new UserCreateFailedMessage(username);
+        try {
+            String json = objectMapper.writeValueAsString(message);
+            rabbitTemplate.convertAndSend("recommendationQueue", json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createUserNotificationConfig(User newUser) {
