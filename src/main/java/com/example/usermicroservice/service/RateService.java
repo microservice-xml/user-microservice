@@ -8,6 +8,8 @@ import com.example.usermicroservice.model.User;
 import com.example.usermicroservice.repository.RateRepository;
 import com.example.usermicroservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -25,6 +27,7 @@ public class RateService {
     RateRepository rateRepository;
     private final ReservationService reservationService;
     private final UserRepository userRepository;
+    private Logger logger = LoggerFactory.getLogger(RateService.class);
 
     public List<Rate> findAll() {
         return rateRepository.findAll();
@@ -46,6 +49,7 @@ public class RateService {
                 User u = userRepository.findById(rate.getHostId()).get();
                 u.setAvgGrade(calculateAvgRate(rate));
                 userRepository.save(u);
+                logger.info("Successfully created rate [ID: %d] from the host [ID: %d]",newRate.getId(),u.getId());
                 reservationService.updateHostHighlighted(rate.getHostId());
                 createNotification(rate.getHostId(), "You have received a new rating on your profile. Your current average rating is " + u.getAvgGrade(),"newRate");
                 return newRate;
@@ -63,6 +67,7 @@ public class RateService {
         User u = userRepository.findById(rate.getHostId()).get();
         u.setAvgGrade(calculateAvgRate(rate));
         userRepository.save(u);
+        logger.info("Successfully edit rate [ID: %d] from the host [ID: %d]",nr.getId(),u.getId());
         reservationService.updateHostHighlighted(rate.getHostId());
         return nr;
     }
@@ -75,6 +80,7 @@ public class RateService {
             User u = userRepository.findById(rate.getHostId()).orElse(null);
             u.setAvgGrade(calculateAvgRate(rate));
             userRepository.save(u);
+            logger.info("Successfully remove rate [ID: %d] from the host [ID: %d]",rate.getId(),u.getId());
             reservationService.updateHostHighlighted(rate.getHostId());
             return rate;
         }

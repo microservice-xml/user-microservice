@@ -16,6 +16,8 @@ import communication.UserIdRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -45,7 +47,7 @@ public class UserService {
 
     @Value("${accommodation-api.grpc.address}")
     private String reservationApiGrpcAddress;
-
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
     public List<User> findAll() {
         return userRepository.findAll();
     };
@@ -57,6 +59,7 @@ public class UserService {
             User newUser = userRepository.save(user);
             publishNewUser(newUser);
             createUserNotificationConfig(newUser);
+            logger.info("Successfully created user. [ID: %d]",newUser.getId());
             return newUser;
         } catch (Exception ex) {
             publishRollback(user.getUsername());
@@ -116,7 +119,9 @@ public class UserService {
         user.get().setPhoneNumber(newUserInfo.getPhoneNumber());
         user.get().setPenalties(newUserInfo.getPenalties());
 
-        return userRepository.save(user.get());
+        User u = userRepository.save(user.get());
+        logger.info("Successfully edit user. [ID: %d]", u.getId());
+        return u;
     }
     public boolean deleteUser(Long id){
         BooleanResponse response;
@@ -173,5 +178,6 @@ public class UserService {
         User u = getById(id);
         u.setPenalties(u.getPenalties()+1);
         userRepository.save(u);
+        logger.info("Successfully inc penalties of user [ID: %d]",id);
     }
 }
