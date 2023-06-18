@@ -42,10 +42,10 @@ public class UserService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${reservation-api.grpc.address}")
+    @Value("${accommodation-api.grpc.address}")
     private String accommodationApiGrpcAddress;
 
-    @Value("${accommodation-api.grpc.address}")
+    @Value("${reservation-api.grpc.address}")
     private String reservationApiGrpcAddress;
     private Logger logger = LoggerFactory.getLogger(UserService.class);
     public List<User> findAll() {
@@ -99,9 +99,9 @@ public class UserService {
         HttpEntity<NotificationConfigDto> requestBody = new HttpEntity<>(NotificationConfigDto.builder().userId(newUser.getId()).build());
         ResponseEntity<String> response;
         if(newUser.getRole().equals(Role.HOST)) {
-             response = restTemplate.exchange("http://localhost:8088/config/host", HttpMethod.POST,requestBody,String.class);
+             response = restTemplate.exchange("http://notification-api:8088/config/host", HttpMethod.POST,requestBody,String.class);
         } else{
-            response = restTemplate.exchange("http://localhost:8088/config/guest", HttpMethod.POST,requestBody,String.class);
+            response = restTemplate.exchange("http://notification-api:8088/config/guest", HttpMethod.POST,requestBody,String.class);
         }
     }
 
