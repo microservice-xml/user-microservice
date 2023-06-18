@@ -11,6 +11,8 @@ import communication.rateServiceGrpc;
 import communication.userDetailsServiceGrpc;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -24,9 +26,12 @@ public class grpcRateService extends rateServiceGrpc.rateServiceImplBase {
 
     private final RateRepository rateRepository;
 
+    private Logger logger = LoggerFactory.getLogger(grpcRateService.class);
+
     @Override
     public void rateHost(communication.Rate request,
                          io.grpc.stub.StreamObserver<communication.MessageResponse> responseObserver) {
+        logger.trace("Request to rate the host with id {} with grade {} was made", request.getHostId(), request.getRateValue());
         Rate rate = convertRateRequestToEntity(request);
         Rate r = rateService.rateHost(rate);
 
@@ -43,6 +48,7 @@ public class grpcRateService extends rateServiceGrpc.rateServiceImplBase {
     @Override
     public void changeRate(communication.Rate request,
                            io.grpc.stub.StreamObserver<communication.Rate> responseObserver) {
+        logger.trace("Request to edit the rating for host with id {} with new grade {} was made", request.getHostId(), request.getRateValue());
         Rate rate = convertRateRequestToEntityWithId(request);
         Rate r = rateService.changeRate(rate);
 
@@ -52,7 +58,7 @@ public class grpcRateService extends rateServiceGrpc.rateServiceImplBase {
     @Override
     public void deleteRate(communication.UserIdRequest request,
                            io.grpc.stub.StreamObserver<communication.Rate> responseObserver) {
-
+        logger.trace("Request to delete the host rating with id {} was made", request.getId());
         Rate rate = rateService.deleteRate(request.getId());
 
         responseObserver.onNext(convertFromMessageToRateWithId(rate));
@@ -61,6 +67,7 @@ public class grpcRateService extends rateServiceGrpc.rateServiceImplBase {
     @Override
     public void getAllByHostId(communication.UserIdRequest request,
                                io.grpc.stub.StreamObserver<communication.ListRate> responseObserver) {
+        logger.trace("Request to find all ratings for host with id {} was made", request.getId());
         List<Rate> rates = rateService.getAllByHostId(request.getId());
 
         List<communication.Rate> convertedRates = RateMapper.convertListFromMessageToRateWithId(rates);
