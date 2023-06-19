@@ -46,6 +46,7 @@ message RegisterUserAvgGrade {
   uint32 penalties = 8;
   Role role = 9;
   float avgGrade = 10;
+  bool isHighlighted = 11;
 }
 
 message User {
