@@ -82,9 +82,9 @@ public class grpcUserDetailsService extends userDetailsServiceGrpc.userDetailsSe
     public void delete(communication.UserIdRequest request,
                        io.grpc.stub.StreamObserver<communication.MessageResponse> responseObserver) {
                     logger.trace("Request to delete the user with id {} was made", request.getId());
-                    boolean success = userService.deleteUser(request.getId());
+                    userService.deleteUserOrc(request.getId());
                     MessageResponse message;
-                    if(success) {
+                    if(true) {
                         message = MessageResponse.newBuilder().setMessage("You have successfully deleted your profile.").build();
                     } else {
                         message = MessageResponse.newBuilder().setMessage("You profile can't be deleted due to future reservations.").build();

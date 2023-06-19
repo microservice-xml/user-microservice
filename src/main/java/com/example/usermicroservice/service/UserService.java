@@ -163,6 +163,12 @@ public class UserService {
         return false;
     }
 
+    public void deleteUserOrc(Long userId) {
+        User user = getById(userId);
+        user.setDeleted(true);
+        userRepository.save(user);
+    }
+
     public User loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
 
