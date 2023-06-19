@@ -39,6 +39,9 @@ public class RateService {
         for (Rate rat : rates) {
             sum += rat.getRateValue();
         }
+        if (rates.size() == 0) {
+            return 0;
+        }
         return sum / rates.size();
     }
 

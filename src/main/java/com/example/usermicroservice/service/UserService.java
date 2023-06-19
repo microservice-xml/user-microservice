@@ -1,5 +1,6 @@
 package com.example.usermicroservice.service;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.usermicroservice.dto.messages.NewGuestUserMessage;
 import com.example.usermicroservice.dto.NotificationConfigDto;
 import com.example.usermicroservice.dto.messages.UserCreateFailedMessage;
@@ -163,7 +164,14 @@ public class UserService {
     }
 
     public User loadUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+
+        if (user == null || user.isDeleted()) {
+
+            return null;
+        }
+
+        return user;
     }
 
     public User getById(Long id) {
