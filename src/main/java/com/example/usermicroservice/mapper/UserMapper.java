@@ -59,6 +59,7 @@ public class UserMapper {
                 .setPenalties(user.getPenalties())
                 .setRole(convertToMessageRole(user.getRole()))
                 .setAvgGrade(user.getAvgGrade())
+                .setIsHighlighted(user.isHighlighted())
                 .build();
     }
 
